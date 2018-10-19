@@ -146,7 +146,7 @@ function stopStream(stream) {
 
 
         //peer1の作成
-        var peer1 = context1.createMediaStreamDestination();
+        var peer1 = context.createMediaStreamDestination();
     
         merger.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
