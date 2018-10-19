@@ -61,9 +61,6 @@ function stopStream(stream) {
   while(micList.lastChild) {
    micList.removeChild(micList.lastChild);
   }
-  while(micList2.lastChild) {
-    micList2.removeChild(micList2.lastChild);
-   }
 }
 
  function addDevice(device) {
@@ -119,7 +116,6 @@ function stopStream(stream) {
      EchoCancellation:false
     }
     };
-
   navigator.mediaDevices.getUserMedia(
    constraints
   ).then(function(stream) {
@@ -159,7 +155,7 @@ function stopStream(stream) {
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
   });
-
+ }
  navigator.mediaDevices.ondevicechange = function (evt) {
   console.log('mediaDevices.ondevicechange() evt:', evt);
  };
