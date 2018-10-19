@@ -121,7 +121,7 @@ function stopStream(stream) {
   ).then(function(stream) {
     console.log('1streamきてる');
         //AudioContextを作成
-        var context1  = new AudioContext();
+        var context  = new AudioContext();
         //sourceの作成
         var source1 = context.createMediaStreamSource(stream);
 
