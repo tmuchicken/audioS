@@ -136,6 +136,8 @@ function stopStream(stream) {
         StereoPanner2.pan.value = 1;
         splitter.connect(StereoPanner2,1);
 
+
+        var merger = context.createChannelMerger(2);
         StereoPanner1.connect(merger,0,1);
         StereoPanner2.connect(merger,1,0);
         
