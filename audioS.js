@@ -121,7 +121,7 @@ function stopStream(stream) {
   ).then(function(stream) {
     console.log('1streamきてる');
         //AudioContextを作成
-        var context  = new AudioContext();
+        var context1  = new AudioContext();
         //sourceの作成
         var source1 = context.createMediaStreamSource(stream);
 
@@ -135,10 +135,9 @@ function stopStream(stream) {
         var StereoPanner2 = context.createStereoPanner();
         StereoPanner2.pan.value = 1;
         splitter.connect(StereoPanner2,1);
-        
-        var merger = context.createChannelMerger(2);
-        StereoPanner1.connect(merger,0,0);
-        StereoPanner2.connect(merger,1,1);
+
+        StereoPanner1.connect(merger,0,1);
+        StereoPanner2.connect(merger,0,1);
         
 
         //panner の作成
@@ -147,7 +146,7 @@ function stopStream(stream) {
 
 
         //peer1の作成
-        var peer1 = context.createMediaStreamDestination();
+        var peer1 = context1.createMediaStreamDestination();
     
         merger.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
