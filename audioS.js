@@ -97,7 +97,6 @@ function stopStream(stream) {
     console.log(device.kind + ": " + device.label +
                 " id = " + device.deviceId);
     addDevice(device);
-    addDevice2(device);
    });
   })
   .catch(function(err) {
