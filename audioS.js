@@ -5,7 +5,7 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 var micList = document.getElementById("mic_list");
 var micList2 = document.getElementById("mic_list2");
-var localStream = null;
+//var localStream = null;
 var localStream1 = null;
 var localStream2 = null;
 let peer = null;
@@ -218,6 +218,11 @@ peer = new Peer({
 ///////////////////////
 
 
+var localstream =new webkitMediaStream();
+localStream1.addTrack(localstream);
+localStream2.addTrack(localstream);
+
+
 ///////////////open,error,close,disconnectedイベント
 peer.on('open', function(){         //発火する
     $('#my-id').text(peer.id);      //Peer IDの自動作成タイム
@@ -238,10 +243,8 @@ peer.on('disconnected', function(){
 ///////////////発信処理・切断処理・着信処理
 $('#make-call').submit(function(e){
     e.preventDefault();
-    const call = peer.call($('#callto-id').val(), localStream1); 
-    const call2 = peer.call($('#callto-id').val(), localStream2); 
+    const call = peer.call($('#callto-id').val(), localStream); 
     setupCallEventHandlers(call);
-    setupCallEventHandlers2(call2);
     });
 
 $('#end-call').click(function(){
@@ -252,11 +255,6 @@ peer.on('call', function(call){
     call.answer(localStream1);
     setupCallEventHandlers(call);
 });
-
-peer.on('call2',function(call2){
-    call2.answer(localstream2);
-    setupCallEventHandlers(call2);
-})
 
 /////////////////////
 
@@ -276,27 +274,6 @@ function setupCallEventHandlers(call){
     });
     call.on('close', function(){
         removeVideo(call.remoteId);
-        setupMakeCallUI();
-    });
-}
-//////////////////////////////////
-
-
-//////////Callオブジェクトに必要なイベント2
-function setupCallEventHandlers2(call2){
-    if (existingCall2) {
-        existingCall2.close();
-    };
-
-    existingCall2 = call2;
-
-    call2.on('stream', function(stream){
-        addVideo(call2,stream);
-        setupEndCallUI();
-        $('#their-id').text(call2.remoteId);
-    });
-    call2.on('close', function(){
-        removeVideo(call2.remoteId);
         setupMakeCallUI();
     });
 }
