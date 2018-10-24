@@ -10,6 +10,7 @@ var localStream1 = null;
 var localStream2 = null;
 let peer = null;
 let existingCall = null;
+let existingCall2 = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
 
@@ -237,8 +238,10 @@ peer.on('disconnected', function(){
 ///////////////発信処理・切断処理・着信処理
 $('#make-call').submit(function(e){
     e.preventDefault();
-    const call = peer.call($('#callto-id').val(), localStream1&&localStream2); 
+    const call = peer.call($('#callto-id').val(), localStream1); 
+    const call2 = peer.call2($('#callto-id').val(), localStream2); 
     setupCallEventHandlers(call);
+    setupCallEventHandlers(call2);
     });
 
 $('#end-call').click(function(){
@@ -246,9 +249,15 @@ $('#end-call').click(function(){
 });
 
 peer.on('call', function(call){
-    call.answer(localStream1&&localStream2);
+    call.answer(localStream1);
     setupCallEventHandlers(call);
 });
+
+peer.on('call2',function(call2){
+    call2.answer(localstream2);
+    setupCallEventHandlers(call2);
+})
+
 /////////////////////
 
 
@@ -267,6 +276,27 @@ function setupCallEventHandlers(call){
     });
     call.on('close', function(){
         removeVideo(call.remoteId);
+        setupMakeCallUI();
+    });
+}
+//////////////////////////////////
+
+
+//////////Callオブジェクトに必要なイベント2
+function setupCallEventHandlers(call2){
+    if (existingCall2) {
+        existingCall2.close();
+    };
+
+    existingCall2 = call2;
+
+    call2.on('stream', function(stream){
+        addVideo(call2,stream);
+        setupEndCallUI();
+        $('#their-id').text(call2.remoteId);
+    });
+    call2.on('close', function(){
+        removeVideo(call2.remoteId);
         setupMakeCallUI();
     });
 }
