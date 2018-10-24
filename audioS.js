@@ -241,7 +241,7 @@ $('#make-call').submit(function(e){
     const call = peer.call($('#callto-id').val(), localStream1); 
     const call2 = peer.call($('#callto-id').val(), localStream2); 
     setupCallEventHandlers(call);
-    setupCallEventHandlers(call2);
+    setupCallEventHandlers2(call2);
     });
 
 $('#end-call').click(function(){
@@ -283,7 +283,7 @@ function setupCallEventHandlers(call){
 
 
 //////////Callオブジェクトに必要なイベント2
-function setupCallEventHandlers(call2){
+function setupCallEventHandlers2(call2){
     if (existingCall2) {
         existingCall2.close();
     };
