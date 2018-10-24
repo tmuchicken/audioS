@@ -170,9 +170,9 @@ function stopStream(stream) {
         //AudioContextを作成
         var context1  = new AudioContext();
         //sourceの作成
-        var source1 = context.createMediaStreamSource(stream);
+        var source1 = context1.createMediaStreamSource(stream);
         //panner の作成
-        var panner1 = context.createPanner();
+        var panner1 = context1.createPanner();
         source1.connect(panner1);
         //peer1の作成
         var peer1 = context1.createMediaStreamDestination();
@@ -191,14 +191,14 @@ function stopStream(stream) {
     console.log('2streamきてる');
     var context2  = new AudioContext();
     //sourceの作成
-    var source2 = context.createMediaStreamSource(stream);
+    var source2 = context2.createMediaStreamSource(stream);
     //panner の作成
-    var panner2 = context.createPanner();
-    source2.connect(panner1);
+    var panner2 = context2.createPanner();
+    source2.connect(panner2);
     //peer1の作成
-    var peer2 = context1.createMediaStreamDestination();
+    var peer2 = context2.createMediaStreamDestination();
 
-    panner2.connect(peer1); //ココの先頭変えるよ
+    panner2.connect(peer2); //ココの先頭変えるよ
     localStream2 = peer2.stream;
    }).catch(function(err){
     console.error('getUserMedia Err:', err);
