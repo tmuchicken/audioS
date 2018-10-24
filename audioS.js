@@ -239,7 +239,7 @@ peer.on('disconnected', function(){
 $('#make-call').submit(function(e){
     e.preventDefault();
     const call = peer.call($('#callto-id').val(), localStream1); 
-    const call2 = peer.call2($('#callto-id').val(), localStream2); 
+    const call2 = peer.call($('#callto-id').val(), localStream2); 
     setupCallEventHandlers(call);
     setupCallEventHandlers(call2);
     });
