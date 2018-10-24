@@ -4,8 +4,10 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext; 
 
 var micList = document.getElementById("mic_list");
+var micList2 = document.getElementById("mic_list2");
 var localStream = null;
 var localStream1 = null;
+var localStream2 = null;
 let peer = null;
 let existingCall = null;
 var videoContainer = document.getElementById('container');
@@ -61,6 +63,9 @@ function stopStream(stream) {
   while(micList.lastChild) {
    micList.removeChild(micList.lastChild);
   }
+  while(micList2.lastChild) {
+    micList2.removeChild(micList2.lastChild);
+   }
 }
 
  function addDevice(device) {
@@ -86,6 +91,30 @@ function stopStream(stream) {
   }
  }
 
+ function addDevice2(device) {
+    //console.log('2きてる');
+    if (device.kind === 'audioinput') {
+     var id2 = device.deviceId;
+     var label2 = device.label || 'microphone'; // label is available for https 
+     var option2 = document.createElement('option');
+     option2.setAttribute('value', id2);
+     option2.innerHTML = label2 + '(' + id2 + ')';;
+     micList2.appendChild(option2);
+
+    }
+    else if (device.kind === 'audiooutput') {
+      var id2 = device.deviceId;
+      var label2 = device.label || 'speaker'; // label is available for https 
+   
+      var option2 = document.createElement('option');
+      option2.setAttribute('value', id2);
+      option2.innerHTML = label2 + '(' + id2 + ')'; 
+     }
+    else {
+     console.error('UNKNOWN Device kind:' + device.kind);
+    }
+   }
+
  function getDeviceList() {
   clearDeviceList();
   navigator.mediaDevices.enumerateDevices()
@@ -94,6 +123,7 @@ function stopStream(stream) {
     console.log(device.kind + ": " + device.label +
                 " id = " + device.deviceId);
     addDevice(device);
+    addDevice2(device);
    });
   })
   .catch(function(err) {
@@ -106,58 +136,75 @@ function stopStream(stream) {
   return id;
  }
 
+ function getSelectedAudio2() {
+  var id2 = micList2.options[micList2.selectedIndex].value;
+  return id2;
+ }
+
  function startSelectedVideoAudio() {
   var audioId = getSelectedAudio();
   console.log('selected audio=' + audioId);
   var constraints = {
     audio: {
      deviceId: audioId,
-     googEchoCancellation:false, //Google用
-     EchoCancellation:false
+     googEchoCancellation:false //Google用
     }
     };
+  
+  var audioId2= getSelectedAudio2();
+  console.log('selected audio=' + audioId2);
+  var constraints2 = {
+    audio: {
+     deviceId: audioId2,
+     googEchoCancellation:false //Google用
+    }
+    };
+
+  console.log('mediaDevice.getMedia() constraints:', constraints);
+  console.log('mediaDevice.getMedia() constraints2:', constraints2);
+
   navigator.mediaDevices.getUserMedia(
    constraints
   ).then(function(stream) {
     console.log('1streamきてる');
         //AudioContextを作成
-        var context  = new AudioContext();
+        var context1  = new AudioContext();
         //sourceの作成
         var source1 = context.createMediaStreamSource(stream);
-
-        var splitter = context.createChannelSplitter(2);
-        source1.connect(splitter);
-
-        var StereoPanner1 = context.createStereoPanner();
-        StereoPanner1.pan.value = -1;
-        splitter.connect(StereoPanner1,0);
-
-        var StereoPanner2 = context.createStereoPanner();
-        StereoPanner2.pan.value = 1;
-        splitter.connect(StereoPanner2,1);
-
-
-        var merger = context.createChannelMerger(2);
-        StereoPanner1.connect(merger,0,0);
-        StereoPanner2.connect(merger,1,1);
-        
-
         //panner の作成
-        //var panner1 = context.createPanner();
-        //source1.connect(panner1);
-
-
+        var panner1 = context.createPanner();
+        source1.connect(panner1);
         //peer1の作成
-        var peer1 = context.createMediaStreamDestination();
+        var peer1 = context1.createMediaStreamDestination();
     
-        merger.connect(peer1); //ココの先頭変えるよ
+        panner1.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
 
     logStream('selectedVideo', stream);
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
   });
- }
+ 
+ navigator.mediaDevices.getUserMedia(
+    constraints2
+   ).then(function(stream) {
+    console.log('2streamきてる');
+    var context2  = new AudioContext();
+    //sourceの作成
+    var source2 = context.createMediaStreamSource(stream);
+    //panner の作成
+    var panner2 = context.createPanner();
+    source2.connect(panner1);
+    //peer1の作成
+    var peer2 = context1.createMediaStreamDestination();
+
+    panner2.connect(peer1); //ココの先頭変えるよ
+    localStream2 = peer2.stream;
+   }).catch(function(err){
+    console.error('getUserMedia Err:', err);
+   });
+  }
+
  navigator.mediaDevices.ondevicechange = function (evt) {
   console.log('mediaDevices.ondevicechange() evt:', evt);
  };
@@ -190,7 +237,7 @@ peer.on('disconnected', function(){
 ///////////////発信処理・切断処理・着信処理
 $('#make-call').submit(function(e){
     e.preventDefault();
-    const call = peer.call($('#callto-id').val(), localStream1); 
+    const call = peer.call($('#callto-id').val(), localStream1&&localStream2); 
     setupCallEventHandlers(call);
     });
 
@@ -199,7 +246,7 @@ $('#end-call').click(function(){
 });
 
 peer.on('call', function(call){
-    call.answer(localStream1);
+    call.answer(localStream1&&localStream2);
     setupCallEventHandlers(call);
 });
 /////////////////////
