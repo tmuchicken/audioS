@@ -8,6 +8,7 @@ var micList2 = document.getElementById("mic_list2");
 //var localStream = null;
 var localStream1 = null;
 var localStream2 = null;
+var localStream = null;
 let peer = null;
 let existingCall = null;
 let existingCall2 = null;
