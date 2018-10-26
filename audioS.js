@@ -184,8 +184,8 @@ function stopStream(stream) {
         localStream1 = peer1.stream;
 
     logStream('selectedVideo', stream);
-    const track1 = localStream1.getAudioTracks()
-    track1[0].stop()
+    const track1 = localStream1.getAudioTracks();
+    track1[0].stop();
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
   });
@@ -207,19 +207,24 @@ function stopStream(stream) {
     localStream2 = peer2.stream;
 
     const track2 = localStream2.getAudioTracks()
-    track2[0].stop()
+    track2[0].stop();
 
    }).catch(function(err){
     console.error('getUserMedia Err:', err);
    });
+   addTracks();
   }
 
  navigator.mediaDevices.ondevicechange = function (evt) {
   console.log('mediaDevices.ondevicechange() evt:', evt);
-  var localstream =new webkitMediaStream();
-  track1.addTrack(localstream);
-  track2.addTrack(localstream);
  };
+
+
+ function addTracks(){
+    var localstream =new webkitMediaStream();
+    track1.addTrack(localstream);
+    track2.addTrack(localstream);
+ }
 
  ///////////Peerオブジェクトの作成
 peer = new Peer({
