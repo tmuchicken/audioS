@@ -182,6 +182,8 @@ function stopStream(stream) {
         localStream1 = peer1.stream;
 
     logStream('selectedVideo', stream);
+    const track1 = Stream.getAudioTracks()
+    track1[0].stop()
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
   });
@@ -201,6 +203,10 @@ function stopStream(stream) {
 
     panner2.connect(peer2); //ココの先頭変えるよ
     localStream2 = peer2.stream;
+
+    const track2 = Stream.getAudioTracks()
+    track2[0].stop()
+
    }).catch(function(err){
     console.error('getUserMedia Err:', err);
    });
@@ -219,8 +225,8 @@ peer = new Peer({
 
 
 var localstream =new webkitMediaStream();
-localStream1.addTrack(localstream);
-localStream2.addTrack(localstream);
+track1.addTrack(localstream);
+track2.addTrack(localstream);
 
 
 ///////////////open,error,close,disconnectedイベント
