@@ -216,6 +216,9 @@ function stopStream(stream) {
 
  navigator.mediaDevices.ondevicechange = function (evt) {
   console.log('mediaDevices.ondevicechange() evt:', evt);
+  var localstream =new webkitMediaStream();
+  track1.addTrack(localstream);
+  track2.addTrack(localstream);
  };
 
  ///////////Peerオブジェクトの作成
@@ -226,9 +229,6 @@ peer = new Peer({
 ///////////////////////
 
 
-var localstream =new webkitMediaStream();
-track1.addTrack(localstream);
-track2.addTrack(localstream);
 
 
 ///////////////open,error,close,disconnectedイベント
