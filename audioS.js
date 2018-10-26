@@ -11,6 +11,8 @@ var localStream2 = null;
 let peer = null;
 let existingCall = null;
 let existingCall2 = null;
+let track1 = null;
+let track2 = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
 
