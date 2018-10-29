@@ -244,8 +244,8 @@ peer = new Peer({
 function StartTrack(){
     var localStream =new MediaStream();
 
-    localStream.addTrack(localstream1.getAudioTracks());
-    localStream.addTrack(localstream2.getAudioTracks());
+    localStream.addTrack(localStream1.getAudioTracks());
+    localStream.addTrack(localStream2.getAudioTracks());
 }
 
 
