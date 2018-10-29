@@ -183,15 +183,12 @@ function stopStream(stream) {
         panner1.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
 
-        var localtrack1 = localStream1.getAudioTracks()[0];
+        var localtrack1 = localStream1.getAudioTracks();
         localStream.addTrack(localtrack1);
 
 
         logStream('selectedVideo', stream);
-        /*
-        const track1 = localStream1.getAudioTracks();
-        track1[0].stop();
-        */
+
 
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
@@ -213,13 +210,11 @@ function stopStream(stream) {
     panner2.connect(peer2); //ココの先頭変えるよ
     localStream2 = peer2.stream;
 
-    var localtrack2 = localStream2.getAudioTracks()[1];
+    var localtrack2 = localStream2.getAudioTracks();
     localStream.addTrack(localtrack2);
 
-    /*
-    const track2 = localStream2.getAudioTracks()
-    track2[0].stop();
-    */
+
+    logStream('selectedVideo', stream);
    
    }).catch(function(err){
     console.error('getUserMedia Err:', err);
