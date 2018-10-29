@@ -14,7 +14,7 @@ let track1 = null;
 let track2 = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
-var localStream =new webkitMediaStream();
+
 
 function stopVideo() {
     localVideo.pause();
@@ -183,10 +183,6 @@ function stopStream(stream) {
         panner1.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
 
-        //var localtrack1 = localStream1.getAudioTracks();
-        var localtrack1 = stream.getAudioTracks(); 
-        localStream.addTrack(localtrack1);
-
 
         logStream('selectedVideo', stream);
 
@@ -211,9 +207,6 @@ function stopStream(stream) {
     panner2.connect(peer2); //ココの先頭変えるよ
     localStream2 = peer2.stream;
 
-    //var localtrack2 = localStream2.getAudioTracks();
-    var localtrack2 = stream.getAudioTracks(); 
-    localStream.addTrack(localtrack2);
 
 
     logStream('selectedVideo', stream);
@@ -225,6 +218,8 @@ function stopStream(stream) {
   }
 
  navigator.mediaDevices.ondevicechange = function (evt) {
+     console.log('StartTrack()来てるかな？');
+     StartTrack();
   console.log('mediaDevices.ondevicechange() evt:', evt);
  };
 
@@ -243,6 +238,12 @@ peer = new Peer({
 });
 ///////////////////////
 
+function StartTrack(){
+    var localStream =new MediaStream();
+
+    localStream.addTrack(localstream1.getAudioTracks());
+    localStream.addTrack(localstream2.getAudioTracks());
+}
 
 
 
