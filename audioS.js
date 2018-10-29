@@ -14,7 +14,7 @@ let track1 = null;
 let track2 = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
-var localstream =new webkitMediaStream();
+
 
 function stopVideo() {
     localVideo.pause();
@@ -166,6 +166,8 @@ function stopStream(stream) {
   console.log('mediaDevice.getMedia() constraints:', constraints);
   console.log('mediaDevice.getMedia() constraints2:', constraints2);
 
+  var localstream =new webkitMediaStream();
+
   navigator.mediaDevices.getUserMedia(
    constraints
   ).then(function(stream) {
@@ -192,7 +194,7 @@ function stopStream(stream) {
         const track1 = localStream1.getAudioTracks();
         track1[0].stop();
         */
-       
+
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
   });
@@ -224,7 +226,7 @@ function stopStream(stream) {
    }).catch(function(err){
     console.error('getUserMedia Err:', err);
    });
-   addTracks();
+   //addTracks();
   }
 
  navigator.mediaDevices.ondevicechange = function (evt) {
