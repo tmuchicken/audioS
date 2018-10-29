@@ -183,7 +183,8 @@ function stopStream(stream) {
         panner1.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
 
-        var localtrack1 = localStream1.getAudioTracks();
+        //var localtrack1 = localStream1.getAudioTracks();
+        var localtrack1 = stream.getAudioTracks(); 
         localStream.addTrack(localtrack1);
 
 
@@ -210,7 +211,8 @@ function stopStream(stream) {
     panner2.connect(peer2); //ココの先頭変えるよ
     localStream2 = peer2.stream;
 
-    var localtrack2 = localStream2.getAudioTracks();
+    //var localtrack2 = localStream2.getAudioTracks();
+    var localtrack2 = stream.getAudioTracks(); 
     localStream.addTrack(localtrack2);
 
 
