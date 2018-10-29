@@ -215,6 +215,9 @@ function stopStream(stream) {
     console.error('getUserMedia Err:', err);
    });
    //addTracks();
+   console.log('StartTrack()来てるかな？');
+   StartTrack();
+
   }
 
  navigator.mediaDevices.ondevicechange = function (evt) {
