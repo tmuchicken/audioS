@@ -14,7 +14,7 @@ let track1 = null;
 let track2 = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
-
+var localStream =new webkitMediaStream();
 
 function stopVideo() {
     localVideo.pause();
@@ -165,8 +165,6 @@ function stopStream(stream) {
 
   console.log('mediaDevice.getMedia() constraints:', constraints);
   console.log('mediaDevice.getMedia() constraints2:', constraints2);
-
-  var localstream =new webkitMediaStream();
 
   navigator.mediaDevices.getUserMedia(
    constraints
