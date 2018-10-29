@@ -5,7 +5,6 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 var micList = document.getElementById("mic_list");
 var micList2 = document.getElementById("mic_list2");
-var localStream = null;
 var localStream1 = null;
 var localStream2 = null;
 let peer = null;
@@ -15,6 +14,7 @@ let track1 = null;
 let track2 = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
+var localstream =new webkitMediaStream();
 
 function stopVideo() {
     localVideo.pause();
@@ -183,9 +183,16 @@ function stopStream(stream) {
         panner1.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
 
-    logStream('selectedVideo', stream);
-    const track1 = localStream1.getAudioTracks();
-    track1[0].stop();
+        var localtrack1 = localStream1.getAudioTracks()[0];
+        localStream.addTrack(localtrack1);
+
+
+        logStream('selectedVideo', stream);
+        /*
+        const track1 = localStream1.getAudioTracks();
+        track1[0].stop();
+        */
+       
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
   });
@@ -206,9 +213,14 @@ function stopStream(stream) {
     panner2.connect(peer2); //ココの先頭変えるよ
     localStream2 = peer2.stream;
 
+    var localtrack2 = localStream2.getAudioTracks()[1];
+    localStream.addTrack(localtrack2);
+
+    /*
     const track2 = localStream2.getAudioTracks()
     track2[0].stop();
-
+    */
+   
    }).catch(function(err){
     console.error('getUserMedia Err:', err);
    });
@@ -219,12 +231,13 @@ function stopStream(stream) {
   console.log('mediaDevices.ondevicechange() evt:', evt);
  };
 
-
+/*
  function addTracks(){
     var localstream =new webkitMediaStream();
     track1.addTrack(localstream);
     track2.addTrack(localstream);
  }
+*/
 
  ///////////Peerオブジェクトの作成
 peer = new Peer({
