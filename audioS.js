@@ -4,17 +4,12 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext; 
 
 var micList = document.getElementById("mic_list");
-var micList2 = document.getElementById("mic_list2");
+var localStream = null;
 var localStream1 = null;
-var localStream2 = null;
 let peer = null;
 let existingCall = null;
-let existingCall2 = null;
-let track1 = null;
-let track2 = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
-
 
 function stopVideo() {
     localVideo.pause();
@@ -66,9 +61,6 @@ function stopStream(stream) {
   while(micList.lastChild) {
    micList.removeChild(micList.lastChild);
   }
-  while(micList2.lastChild) {
-    micList2.removeChild(micList2.lastChild);
-   }
 }
 
  function addDevice(device) {
@@ -94,29 +86,6 @@ function stopStream(stream) {
   }
  }
 
- function addDevice2(device) {
-    //console.log('2きてる');
-    if (device.kind === 'audioinput') {
-     var id2 = device.deviceId;
-     var label2 = device.label || 'microphone'; // label is available for https 
-     var option2 = document.createElement('option');
-     option2.setAttribute('value', id2);
-     option2.innerHTML = label2 + '(' + id2 + ')';;
-     micList2.appendChild(option2);
-
-    }
-    else if (device.kind === 'audiooutput') {
-      var id2 = device.deviceId;
-      var label2 = device.label || 'speaker'; // label is available for https 
-   
-      var option2 = document.createElement('option');
-      option2.setAttribute('value', id2);
-      option2.innerHTML = label2 + '(' + id2 + ')'; 
-     }
-    else {
-     console.error('UNKNOWN Device kind:' + device.kind);
-    }
-   }
 
  function getDeviceList() {
   clearDeviceList();
@@ -126,7 +95,6 @@ function stopStream(stream) {
     console.log(device.kind + ": " + device.label +
                 " id = " + device.deviceId);
     addDevice(device);
-    addDevice2(device);
    });
   })
   .catch(function(err) {
@@ -139,37 +107,25 @@ function stopStream(stream) {
   return id;
  }
 
- function getSelectedAudio2() {
-  var id2 = micList2.options[micList2.selectedIndex].value;
-  return id2;
- }
-
- function startSelectedVideoAudio() {
+ function startSelectedVideoAudio(sound) {
   var audioId = getSelectedAudio();
   console.log('selected audio=' + audioId);
   var constraints = {
     audio: {
      deviceId: audioId,
-     googEchoCancellation:false //Google用
-    }
-    };
-  
-  var audioId2= getSelectedAudio2();
-  console.log('selected audio=' + audioId2);
-  var constraints2 = {
-    audio: {
-     deviceId: audioId2,
-     googEchoCancellation:false //Google用
+     //googEchoCancellation:false, //Google用
+     echoCancellation:false
     }
     };
 
   console.log('mediaDevice.getMedia() constraints:', constraints);
-  console.log('mediaDevice.getMedia() constraints2:', constraints2);
 
   navigator.mediaDevices.getUserMedia(
    constraints
   ).then(function(stream) {
     console.log('1streamきてる');
+    logStream('selectedVideo', stream);
+    //localVideo.srcObject = stream;
         //AudioContextを作成
         var context1  = new AudioContext();
         //sourceの作成
@@ -177,79 +133,143 @@ function stopStream(stream) {
         //panner の作成
         var panner1 = context1.createPanner();
         source1.connect(panner1);
+        //StereoPannerの作成
+        var StereoPanner = context1.createStereoPanner();
+        panner1.connect(StereoPanner);
+        StereoPanner.pan.value = sound;
+      
         //peer1の作成
         var peer1 = context1.createMediaStreamDestination();
     
-        panner1.connect(peer1); //ココの先頭変えるよ
+        StereoPanner.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
 
-
-        logStream('selectedVideo', stream);
-
-
+    logStream('selectedVideo', stream);
   }).catch(function(err){
    console.error('getUserMedia Err:', err);
   });
- 
- navigator.mediaDevices.getUserMedia(
-    constraints2
-   ).then(function(stream) {
-    console.log('2streamきてる');
-    var context2  = new AudioContext();
-    //sourceの作成
-    var source2 = context2.createMediaStreamSource(stream);
-    //panner の作成
-    var panner2 = context2.createPanner();
-    source2.connect(panner2);
-    //peer1の作成
-    var peer2 = context2.createMediaStreamDestination();
-
-    panner2.connect(peer2); //ココの先頭変えるよ
-    localStream2 = peer2.stream;
-
-
-
-    logStream('selectedVideo', stream);
-   
-   }).catch(function(err){
-    console.error('getUserMedia Err:', err);
-   });
-   //addTracks();
-   console.log('StartTrack()来てるかな？');
-   StartTrack();
-
-  }
+ };
 
  navigator.mediaDevices.ondevicechange = function (evt) {
-     console.log('StartTrack()来てるかな？');
-     StartTrack();
   console.log('mediaDevices.ondevicechange() evt:', evt);
  };
 
-/*
- function addTracks(){
-    var localstream =new webkitMediaStream();
-    track1.addTrack(localstream);
-    track2.addTrack(localstream);
- }
-*/
 
- ///////////Peerオブジェクトの作成
-peer = new Peer({
-    key: '9373b614-604f-4fd5-b96a-919b20a7c24e',
-    debug: 3
-});
+//peeridを取得
+function getpeerid(id) {
+    //ボタンをすべて消す　PeerIDがサーバーに残ってしまい初期化ができない
+    $('#peerid-ui').hide();
+
+    //peerオブジェクトの作成
+    peer = new Peer(id,{
+        key: '9373b614-604f-4fd5-b96a-919b20a7c24e',    //APIkey
+        debug: 3
+    });
+
+    start();//イベント確認
+}
 ///////////////////////
 
-function StartTrack(){
-    var localStream =new MediaStream();
 
-    localStream.addTrack(localStream1.getAudioTracks());
-    localStream.addTrack(localStream2.getAudioTracks());
+//オーディオシステムの選択
+$('#start_video_button_L').click(function () {
+    startSelectedVideoAudio(-1);
+});
+
+$('#start_video_button_R').click(function () {
+    startSelectedVideoAudio(1);
+});
+
+$('#start_video_button_W').click(function () {
+    startSelectedVideoAudio(0);
+});
+
+
+//peeridの選択
+$('#AudioL1').click(function () {
+    getpeerid("AL1");
+    $('#callto-id').val("AUL1");
+});
+
+$('#AudioL2').click(function () {
+    getpeerid("AL2");
+    $('#callto-id').val("AUL2");
+});
+
+$('#AudioR1').click(function () {
+    getpeerid("AR1");
+    $('#callto-id').val("AUR1");
+});
+
+$('#AudioR1').click(function () {
+    getpeerid("AR2");
+    $('#callto-id').val("AUR2");
+});
+
+$('#AudioUserL1').click(function () {
+    getpeerid("AUL1");
+    $('#callto-id').val("AL1");
+    isReceive = true;
+});
+
+$('#AudioUserL2').click(function () {
+    getpeerid("AUL2");
+    $('#callto-id').val("AL2");
+    isReceive = true;
+});
+
+$('#AudioUserR1').click(function () {
+    getpeerid("AUR1");
+    $('#callto-id').val("AR1");
+    isReceive = true;
+});
+
+$('#AudioUserR2').click(function () {
+    getpeerid("AUR2");
+    $('#callto-id').val("AR2");
+    isReceive = true;
+});
+
+
+$('#random').click(function () {
+    getpeerid(null);
+});
+
+
+//イベント id取得後じゃないと動作しない
+function start() {
+    //openイベント
+    peer.on('open', function () {
+        $('#my-id').text(peer.id);
+    });
+
+    //errorイベント
+    peer.on('error', function (err) {
+        alert(err.message);
+        setupMakeCallUI();
+    });
+
+    //closeイベント
+    peer.on('close', function () {
+        alert(err.message);
+        setupMakeCallUI();
+    });
+
+    //disconnectedイベント
+    peer.on('disconnected', function () {
+        alert(err.message);
+        setupMakeCallUI();
+    });
+
+    //着信処理
+    peer.on('call', function(call){
+        call.answer(localStream1);
+        setupCallEventHandlers(call);
+    });
 }
 
 
-
+/*
 ///////////////open,error,close,disconnectedイベント
 peer.on('open', function(){         //発火する
     $('#my-id').text(peer.id);      //Peer IDの自動作成タイム
@@ -265,12 +285,12 @@ peer.on('close', function(){
 peer.on('disconnected', function(){
 });
 //////////////////////////
-
+*/
 
 ///////////////発信処理・切断処理・着信処理
 $('#make-call').submit(function(e){
     e.preventDefault();
-    const call = peer.call($('#callto-id').val(), localStream); 
+    const call = peer.call($('#callto-id').val(), localStream1); 
     setupCallEventHandlers(call);
     });
 
@@ -278,10 +298,6 @@ $('#end-call').click(function(){
     existingCall.close();
 });
 
-peer.on('call', function(call){
-    call.answer(localStream);
-    setupCallEventHandlers(call);
-});
 
 /////////////////////
 
@@ -293,6 +309,9 @@ function setupCallEventHandlers(call){
     };
 
     existingCall = call;
+
+    
+    setupEndCallUI(call);
 
     call.on('stream', function(stream){
         addVideo(call,stream);
@@ -314,7 +333,6 @@ function addVideo(call,stream){
 
 function removeVideo(peerId){
     $('#'+peerId).remove();
-    alert("つながったようです。");
 }
 
 function setupMakeCallUI(){
@@ -325,5 +343,6 @@ function setupMakeCallUI(){
 function setupEndCallUI() {
     $('#make-call').hide();
     $('#end-call').show();
+    $('#their-id').text(call.remoteId);
 }
 //////////////////////////////////////
