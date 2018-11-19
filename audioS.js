@@ -132,6 +132,7 @@ function stopStream(stream) {
         var source1 = context1.createMediaStreamSource(stream);
         //panner の作成
         var panner1 = context1.createPanner();
+        panner1.panningModel = 'HRTF';
         source1.connect(panner1);
         //StereoPannerの作成
         var StereoPanner = context1.createStereoPanner();
