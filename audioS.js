@@ -187,6 +187,16 @@ $('#start_video_button_W').click(function () {
 
 
 //peeridの選択
+$('#AudioLR1').click(function () {
+    getpeerid("ALR1");
+    $('#callto-id').val("ln1");
+});
+
+$('#AudioLR2').click(function () {
+    getpeerid("ALR2");
+    $('#callto-id').val("ln2");
+});
+
 $('#AudioL1').click(function () {
     getpeerid("AL1");
     $('#callto-id').val("AUL1");
