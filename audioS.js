@@ -113,8 +113,15 @@ function stopStream(stream) {
   var constraints = {
     audio: {
      deviceId: audioId,
-     //googEchoCancellation:false, //Google用
-     echoCancellation:false
+    //Google用
+     googEchoCancellation:false,
+     googAutoGainControl: false,
+     googNoiseSuppression: true,
+
+     //FireFox用
+     echoCancellation:false,
+     autoGainControl:false,
+     noiseSuppression:true,
     }
     };
 
