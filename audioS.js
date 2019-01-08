@@ -10,6 +10,7 @@ let peer = null;
 let existingCall = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
+var sound = 0;
 
 function stopVideo() {
     localVideo.pause();
