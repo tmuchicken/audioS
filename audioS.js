@@ -222,6 +222,13 @@ function getpeerid(id) {
 ///////////////////////
 
 
+function quick(){
+    getpeerid("ALR1");
+    $('#callto-id').val("ln1");
+    startSelectedAudioStereo();
+    start();
+}
+
 //オーディオシステムの選択
 $('#start_video_button_L').click(function () {
     startSelectedVideoAudio(-1);
