@@ -383,7 +383,7 @@ function setupCallEventHandlers(call){
     existingCall = call;
 
     
-    //setupEndCallUI(call);
+    setupEndCallUI(call);
 
     call.on('stream', function(stream){
         addVideo(call,stream);
@@ -412,11 +412,10 @@ function setupMakeCallUI(){
     $('#end-call').hide();
 }
 
-/*
+
 function setupEndCallUI() {
     $('#make-call').hide();
     $('#end-call').show();
     $('#their-id').text(call.remoteId);
 }
-*/
 //////////////////////////////////////
