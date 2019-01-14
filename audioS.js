@@ -416,6 +416,6 @@ function setupMakeCallUI(){
 function setupEndCallUI() {
     $('#make-call').hide();
     $('#end-call').show();
-    $('#their-id').text(call.remoteId);
+    //$('#their-id').text(call.remoteId);
 }
 //////////////////////////////////////
