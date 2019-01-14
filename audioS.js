@@ -223,10 +223,9 @@ function getpeerid(id) {
 
 
 function quick(){
+    startSelectedAudioStereo();
     getpeerid("ALR1");
     $('#callto-id').val("ln1");
-    startSelectedAudioStereo();
-    start();
     $('#make-call').submit(function(e){
         e.preventDefault();
         const call = peer.call($('#callto-id').val(), localStream1); 
@@ -413,9 +412,11 @@ function setupMakeCallUI(){
     $('#end-call').hide();
 }
 
+/*
 function setupEndCallUI() {
     $('#make-call').hide();
     $('#end-call').show();
     $('#their-id').text(call.remoteId);
 }
+*/
 //////////////////////////////////////
