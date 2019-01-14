@@ -185,8 +185,12 @@ function stopStream(stream) {
         source1.connect(panner1);
         //peer1の作成
         var peer1 = context1.createMediaStreamDestination();
-    
-        panner1.connect(peer1); //ココの先頭変えるよ
+        //StereoPannner作成
+        var StereoPanner = context1.createStereoPanner();
+        panner1.connect(StereoPanner);
+        StereoPanner.pan.value = sound;
+
+        StereoPanner.connect(peer1); //ココの先頭変えるよ
         localStream1 = peer1.stream;
 
     logStream('selectedVideo', stream);
