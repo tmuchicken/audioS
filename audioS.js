@@ -120,42 +120,34 @@ function stopStream(stream) {
     */
      //FireFox用
      echoCancellation:false,
-     autoGainControl:false,
-     noiseSuppression:true,
+     //autoGainControl:false,
+     //noiseSuppression:true,
     }
     };
 
   console.log('mediaDevice.getMedia() constraints:', constraints);
 
   navigator.mediaDevices.getUserMedia(
-   constraints
-  ).then(function(stream) {
-    console.log('1streamきてる');
-    logStream('selectedVideo', stream);
-    //localVideo.srcObject = stream;
-        //AudioContextを作成
-        var context1  = new AudioContext();
-        //sourceの作成
-        var source1 = context1.createMediaStreamSource(stream);
-        //panner の作成
-        var panner1 = context1.createPanner();
-        panner1.panningModel = 'HRTF';
-        source1.connect(panner1);
-        //StereoPannerの作成
-        var StereoPanner = context1.createStereoPanner();
-        panner1.connect(StereoPanner);
-        StereoPanner.pan.value = sound;
-      
-        //peer1の作成
-        var peer1 = context1.createMediaStreamDestination();
-    
-        StereoPanner.connect(peer1); //ココの先頭変えるよ
-        localStream1 = peer1.stream;
-
-    logStream('selectedVideo', stream);
-  }).catch(function(err){
-   console.error('getUserMedia Err:', err);
-  });
+    constraints
+   ).then(function(stream) {
+     console.log('1streamきてる');
+     logStream('selectedVideo', stream);
+         //AudioContextを作成
+         var context1  = new AudioContext();
+         //sourceの作成
+         var source1 = context1.createMediaStreamSource(stream);
+         //panner の作成
+         var panner1 = context1.createPanner();
+         source1.connect(panner1);
+         //peer1の作成
+         var peer1 = context1.createMediaStreamDestination();
+         panner1.connect(peer1); //ココの先頭変えるよ
+         localStream1 = peer1.stream;
+ 
+     logStream('selectedVideo', stream);
+   }).catch(function(err){
+    console.error('getUserMedia Err:', err);
+   });
  };
 
  function startSelectedVideoAudio(sound) {
@@ -179,28 +171,28 @@ function stopStream(stream) {
     console.log('mediaDevice.getMedia() constraints:', constraints);
   
     navigator.mediaDevices.getUserMedia(
-     constraints
-    ).then(function(stream) {
-      console.log('1streamきてる');
-      logStream('selectedVideo', stream);
-      //localVideo.srcObject = stream;
-          //AudioContextを作成
-          var context1  = new AudioContext();
-          //sourceの作成
-          var source1 = context1.createMediaStreamSource(stream);
-          //panner の作成
-          var panner1 = context1.createPanner();
-          panner1.panningModel = 'HRTF';
-          source1.connect(panner1);
-          //peer1の作成
-          var peer1 = context1.createMediaStreamDestination();
-          panner1.connect(peer1); //ココの先頭変えるよ
-          localStream1 = peer1.stream;
-  
-      logStream('selectedVideo', stream);
-    }).catch(function(err){
-     console.error('getUserMedia Err:', err);
-    });
+   constraints
+  ).then(function(stream) {
+    console.log('1streamきてる');
+    logStream('selectedVideo', stream);
+    //localVideo.srcObject = stream;
+        //AudioContextを作成
+        var context1  = new AudioContext();
+        //sourceの作成
+        var source1 = context1.createMediaStreamSource(stream);
+        //panner の作成
+        var panner1 = context1.createPanner();
+        source1.connect(panner1);
+        //peer1の作成
+        var peer1 = context1.createMediaStreamDestination();
+    
+        panner1.connect(peer1); //ココの先頭変えるよ
+        localStream1 = peer1.stream;
+
+    logStream('selectedVideo', stream);
+  }).catch(function(err){
+   console.error('getUserMedia Err:', err);
+  });
    };
 
 
