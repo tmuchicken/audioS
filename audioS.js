@@ -227,6 +227,11 @@ function quick(){
     $('#callto-id').val("ln1");
     startSelectedAudioStereo();
     start();
+    $('#make-call').submit(function(e){
+        e.preventDefault();
+        const call = peer.call($('#callto-id').val(), localStream1); 
+        setupCallEventHandlers(call);
+        });
 }
 
 //オーディオシステムの選択
