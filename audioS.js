@@ -232,7 +232,7 @@ $('#start_video_button_R').click(function () {
 });
 
 $('#start_video_button_W').click(function () {
-    startSelectedVideoAudio(0);
+    startSelectedAudioStereo();
 });
 
 
