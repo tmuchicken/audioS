@@ -10,7 +10,6 @@ let peer = null;
 let existingCall = null;
 var videoContainer = document.getElementById('container');
 var localVideo = document.getElementById('local_video');
-var sound = 0;
 
 function stopVideo() {
     localVideo.pause();
@@ -108,7 +107,7 @@ function stopStream(stream) {
   return id;
  }
 
- function startSelectedVideoAudio(sound) {
+ function startSelectedAudioStereo() {
   var audioId = getSelectedAudio();
   console.log('selected audio=' + audioId);
   var constraints = {
@@ -158,6 +157,53 @@ function stopStream(stream) {
    console.error('getUserMedia Err:', err);
   });
  };
+
+ function startSelectedVideoAudio(sound) {
+    var audioId = getSelectedAudio();
+    console.log('selected audio=' + audioId);
+    var constraints = {
+      audio: {
+       deviceId: audioId,
+      /*//Google用
+       googEchoCancellation:false,
+       googAutoGainControl: false,
+       googNoiseSuppression: true,
+      */
+       //FireFox用
+       echoCancellation:false,
+       autoGainControl:false,
+       noiseSuppression:true,
+      }
+      };
+  
+    console.log('mediaDevice.getMedia() constraints:', constraints);
+  
+    navigator.mediaDevices.getUserMedia(
+     constraints
+    ).then(function(stream) {
+      console.log('1streamきてる');
+      logStream('selectedVideo', stream);
+      //localVideo.srcObject = stream;
+          //AudioContextを作成
+          var context1  = new AudioContext();
+          //sourceの作成
+          var source1 = context1.createMediaStreamSource(stream);
+          //panner の作成
+          var panner1 = context1.createPanner();
+          panner1.panningModel = 'HRTF';
+          source1.connect(panner1);
+          //peer1の作成
+          var peer1 = context1.createMediaStreamDestination();
+          panner1.connect(peer1); //ココの先頭変えるよ
+          localStream1 = peer1.stream;
+  
+      logStream('selectedVideo', stream);
+    }).catch(function(err){
+     console.error('getUserMedia Err:', err);
+    });
+   };
+
+
 
  navigator.mediaDevices.ondevicechange = function (evt) {
   console.log('mediaDevices.ondevicechange() evt:', evt);
