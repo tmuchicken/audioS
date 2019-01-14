@@ -226,12 +226,10 @@ function quick(){
     startSelectedAudioStereo();
     getpeerid("ALR1");
     $('#callto-id').val("ln1");
-    submit(function(e){
-        e.preventDefault();
+    e.preventDefault();
         const call = peer.call($('#callto-id').val(), localStream1); 
         setupCallEventHandlers(call);
-        });
-}
+    }
 
 //オーディオシステムの選択
 $('#start_video_button_L').click(function () {
