@@ -383,7 +383,7 @@ function setupCallEventHandlers(call){
     existingCall = call;
 
     
-    setupEndCallUI(call);
+    //setupEndCallUI(call);
 
     call.on('stream', function(stream){
         addVideo(call,stream);
