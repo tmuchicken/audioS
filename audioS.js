@@ -231,7 +231,8 @@ function quick(){
         const call = peer.call($('#callto-id').val(), localStream1); 
         setupCallEventHandlers(call);
         });
-
+    };
+    
 //オーディオシステムの選択
 $('#start_video_button_L').click(function () {
     startSelectedVideoAudio(-1);
