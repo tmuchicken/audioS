@@ -226,9 +226,27 @@ function quick(){
     startSelectedAudioStereo();
     getpeerid("ALR1");
     $('#callto-id').val("ln1");
+    Promise.resolve()
+  .then(wait(2)) // ここで10秒待つ（「Promiseオブジェクトを返す関数」を thenに渡しています）
+  .then(function() {
+    // ここに目的の処理を書きます。
     const call = peer.call($('#callto-id').val(), localStream1); 
     setupCallEventHandlers(call);
-    };
+    })
+  .catch(function (err) {
+    console.error(err);
+    self.result_message = error;
+  });
+};
+   
+var wait = function(sec) {
+    return function() {
+        return new Promise(function(resolve/*, reject*/) {
+        setTimeout(resolve, sec*1000)
+        });
+    }
+  };
+      
     
 //オーディオシステムの選択
 $('#start_video_button_L').click(function () {
