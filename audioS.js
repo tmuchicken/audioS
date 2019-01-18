@@ -226,11 +226,8 @@ function quick(){
     startSelectedAudioStereo();
     getpeerid("ALR1");
     $('#callto-id').val("ln1");
-    $('#make-call').submit(function(e){
-        e.preventDefault();
-        const call = peer.call($('#callto-id').val(), localStream1); 
-        setupCallEventHandlers(call);
-        });
+    const call = peer.call($('#callto-id').val(), localStream1); 
+    setupCallEventHandlers(call);
     };
     
 //オーディオシステムの選択
